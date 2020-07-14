@@ -1,12 +1,20 @@
 {
   "name": "canvas-font-metrics",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Extract font metrics from web fonts",
-  "main": "./src/index.js",
+  "main": "./dist/canvas-font-metrics.js",
   "repository": "https://github.com/peteshilling/canvas-font-metrics",
   "author": "Pete Shilling <peteshilling@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "build": "webpack --mode production",
+    "prepublish": "npm run build"
+  },
   "dependencies": {
     "fontfaceobserver": "^2.1.0"
+  },
+  "devDependencies": {
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.12"
   }
 }
