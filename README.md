@@ -12,9 +12,17 @@ It uses the [Font Face Observer library](https://fontfaceobserver.com/) to ensur
 
 Note: This library provides some metrics that aren't neccessary for most use cases (ligature and glyph detection, for instance). The bulk of the filesize comes from the inclusion of Adobe's 'Blank' font, which is used to detect what glyphs are available in a font. This functionality can be removed, if needed.
 
+### Installation
+
+```bash
+yarn add canvas-font-metrics
+```
+
 ### Usage
 
 ```js
+import CanvasFontMetrics from 'canvas-font-metrics'
+
 var metrics = await CanvasFontMetrics({
 	fontFamily: 'Helvetica',
 	fontWeight: 400,
@@ -39,3 +47,5 @@ metrics {
 
 */
 ```
+
+To do: Finish documentation
