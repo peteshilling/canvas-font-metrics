@@ -154,7 +154,7 @@ export const detectGlyphs = (ctx) => {
 const normalize = (ctx, measurements, fontSize) => {
 	let normalized = {}
 	for (const prop in measurements) {
-		normalized[prop] = !!measurement[prop] ? measurements[prop] / fontSize : measurement[prop]
+		normalized[prop] = !!measurements[prop] ? measurements[prop] / fontSize : measurements[prop]
 	}
 	return normalized
 }
