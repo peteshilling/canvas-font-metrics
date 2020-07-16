@@ -211,8 +211,8 @@ async function CanvasFontMetrics({
 	// merge default options
 	const mergedOptions = {
 		chars: { ...defaultOptions.chars, ...options.chars },
-		...options,
 		...defaultOptions,
+		...options,
 	}
 
 	const { fontSize, chars, baseline } = mergedOptions
