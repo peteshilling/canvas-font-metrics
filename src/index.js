@@ -15,9 +15,10 @@ const defaultOptions = {
 		xHeight: 'x',
 		descent: 'p',
 		ascent: 'h',
-		tittle: 'i'
+		tittle: 'i',
 	},
-	fontSize: 16
+	fontSize: 16,
+	baseline: 'top',
 }
 
 const defaultFontWeight = 400
@@ -27,7 +28,7 @@ const ligatureCodes = {
 	ff: 64256,
 	fi: 64257,
 	fl: 64258,
-	st: 64262
+	st: 64262,
 }
 
 const blankFontFamily = 'AdobeBlank'
@@ -76,7 +77,7 @@ const insertblankFont = (weight, style) => {
 const waitForFont = async ({ fontFamily, fontWeight, fontStyle }) => {
 	const observer = new FontFaceObserver(fontFamily, {
 		weight: fontWeight,
-		style: fontStyle
+		style: fontStyle,
 	})
 	await observer.load()
 }
@@ -104,10 +105,10 @@ const getId = ({ fontFamily, fontWeight, fontStyle, options }) =>
  * @property {number}  settings.fontSize    - The font size in pixels
  */
 
-const setFont = ({ ctx, fontFamily, fontWeight, fontStyle, fontSize }) => {
+const setFont = ({ ctx, fontFamily, fontWeight, fontStyle, fontSize, baseline }) => {
 	ctx.font = `${fontWeight} ${fontStyle} ${fontSize}px ${fontFamily}, ${blankFontFamily}`
 	ctx.textAlign = 'left'
-	ctx.textBaseline = 'top'
+	ctx.textBaseline = baseline
 }
 
 /**
@@ -116,7 +117,7 @@ const setFont = ({ ctx, fontFamily, fontWeight, fontStyle, fontSize }) => {
  * @return   {array}   ligatures  - array of detected ligatures
  */
 
-export const detectLigatures = ctx => {
+export const detectLigatures = (ctx) => {
 	const detected = []
 	for (const lig in ligatureCodes) {
 		if (ctx.measureText(String.fromCharCode(ligatureCodes[lig])).width > 0) {
@@ -132,7 +133,7 @@ export const detectLigatures = ctx => {
  * @return   {array}   glyphs     - array of detected glyphs
  */
 
-export const detectGlyphs = ctx => {
+export const detectGlyphs = (ctx) => {
 	const detected = []
 	let string
 	for (let i = 0; i <= 65535; i++) {
@@ -153,7 +154,7 @@ export const detectGlyphs = ctx => {
 const normalize = (ctx, measurements, fontSize) => {
 	let normalized = {}
 	for (const prop in measurements) {
-		normalized[prop] = measurements[prop] / fontSize
+		normalized[prop] = !!measurement[prop] ? measurements[prop] / fontSize : measurement[prop]
 	}
 	return normalized
 }
@@ -196,7 +197,7 @@ async function CanvasFontMetrics({
 	fontFamily,
 	fontWeight = defaultFontWeight,
 	fontStyle = defaultFontStyle,
-	options = {}
+	options = {},
 }) {
 	// check if instance already exists
 	const id = getId({ fontFamily, fontWeight, fontStyle, options })
@@ -211,15 +212,15 @@ async function CanvasFontMetrics({
 	const mergedOptions = {
 		chars: { ...defaultOptions.chars, ...options.chars },
 		...options,
-		...defaultOptions
+		...defaultOptions,
 	}
 
-	const { fontSize, chars } = mergedOptions
+	const { fontSize, chars, baseline } = mergedOptions
 
 	// ready canvas
 	const canvas = document.createElement('canvas')
 	const ctx = canvas.getContext('2d')
-	setFont({ ctx, fontFamily, fontWeight, fontStyle, fontSize })
+	setFont({ ctx, fontFamily, fontWeight, fontStyle, fontSize, baseline })
 
 	// cache widths
 	let widths = {}
@@ -234,15 +235,15 @@ async function CanvasFontMetrics({
 		tittle: measureTop(ctx, chars.tittle, fontSize),
 		ligatures: detectLigatures(ctx),
 		getGlyphs: () => detectGlyphs(ctx),
-		measureWidth: string => {
+		measureWidth: (string) => {
 			if (!widths[string]) {
 				widths[string] = ctx.measureText(string).width / fontSize
 			}
 			return widths[string]
 		},
-		measureText: string => {
+		measureText: (string) => {
 			return normalize(ctx, ctx.measureText(string), fontSize)
-		}
+		},
 	}
 
 	// cache instance
