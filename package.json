@@ -1,6 +1,6 @@
 {
   "name": "canvas-font-metrics",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Extract font metrics from web fonts",
   "main": "./dist/canvas-font-metrics.js",
   "repository": "https://github.com/peteshilling/canvas-font-metrics",
